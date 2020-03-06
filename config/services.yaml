@@ -1,0 +1,62 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+  locale: 'ru'
+
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  Api\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Model/User/Entity,Migrations,Tests,Kernel.php}'
+
+  Myks92\User\:
+    resource: '../vendor/myks92/user/src/*'
+    exclude: '../vendor/myks92/user/src/{Model/User/Entity}'
+
+  Myks92\User\Model\User\Entity\User\UserRepositoryInterface:
+    class: Myks92\User\Model\User\Entity\User\UserRepository
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  Api\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
+
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+  Finesse\SwiftMailerDefaultsPlugin\SwiftMailerDefaultsPlugin:
+    arguments:
+      $defaults:
+        from:
+          '%env(MAILER_FROM_EMAIL)%': '%env(MAILER_FROM_NAME)%'
+    tags:
+      - { name: swiftmailer.default.plugin }
+
+  #Service
+  Myks92\User\Model\User\Service\NewEmailConfirmTokenSenderInterface:
+    class: Api\Container\User\Service\NewEmailConfirmTokenSender
+  Myks92\User\Model\User\Service\PasswordResetTokenSenderInterface:
+    class: Api\Container\User\Service\PasswordResetTokenSender
+  Myks92\User\Model\User\Service\JoinConfirmTokenSenderInterface:
+    class: Api\Container\User\Service\JoinConfirmTokenSender
+
+  Myks92\User\Model\User\Service\TokenizerInterface:
+    class: Myks92\User\Model\User\Service\Tokenizer
+    factory: ['Api\Container\User\Service\ResetTokenizerFactory', 'create']
+    arguments: ['PT1H']
+  Myks92\User\Model\User\Service\PasswordHasherInterface:
+    class: Myks92\User\Model\User\Service\PasswordHasher
+  Myks92\User\Model\User\Service\PasswordGeneratorInterface:
+    class: Myks92\User\Model\User\Service\PasswordGenerator
+
+  Psr\EventDispatcher\EventDispatcherInterface:
+    class: Api\Event\Dispatcher\MessengerEventDispatcher

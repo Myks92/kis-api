@@ -1,0 +1,6 @@
+###> Mail ###
+Unable to send message.: 'Невозможно отправить сообщение.'
+###< Mail ###
+###> Password ###
+Unable to generate hash.: 'Невозможно сгенерировать хеш.'
+###< Password ###

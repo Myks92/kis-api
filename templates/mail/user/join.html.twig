@@ -1,0 +1,11 @@
+{% extends 'mail.html.twig' %}
+
+{% block body %}
+
+    <p>Join confirm link:</p>
+
+    {% set url = url('auth.join-by-email.confirm', {'token': token}) %}
+
+    <p><a href="{{ url }}">{{ url }}</a></p>
+
+{% endblock %}

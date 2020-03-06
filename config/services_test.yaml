@@ -1,0 +1,18 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+  locale: 'en'
+
+services:
+  _defaults:
+    autowire: true
+
+  Api\Tests\Functional\:
+    resource: '../tests/Functional/**/*Fixture.php'
+    tags: ['doctrine.fixture.orm']
+
+  Myks92\User\Model\User\Service\TokenizerInterface:
+    class: Api\Tests\Functional\Profile\TestTokenizer

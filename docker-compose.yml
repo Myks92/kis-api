@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+    api-nginx:
+        build:
+            context: ./docker
+            dockerfile: development/nginx/Dockerfile
+        volumes:
+            - ./:/app:cached
+        depends_on:
+            - api-php-fpm
+        ports:
+            - "8081:80"
+
+    api-php-fpm:
+        build:
+            context: ./docker
+            dockerfile: development/php-fpm/Dockerfile
+        volumes:
+            - ./:/app:cached
+        depends_on:
+            - api-postgres
+            - mailer
+
+    api-php-cli:
+        build:
+            context: ./docker
+            dockerfile: development/php-cli/Dockerfile
+        volumes:
+            - ./:/app:cached
+        depends_on:
+            - api-postgres
+            - mailer
+
+    api-postgres:
+        image: postgres:12.2-alpine
+        volumes:
+            - api-postgres:/var/lib/postgresql/data:cached
+        environment:
+            POSTGRES_USER: app
+            POSTGRES_PASSWORD: secret
+            POSTGRES_DB: app
+        ports:
+            - "54321:5432"
+
+    mailer:
+        image: mailhog/mailhog
+        ports:
+            - "8082:8025"
+
+volumes:
+    api-postgres:

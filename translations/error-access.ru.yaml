@@ -1,0 +1,9 @@
+###> Auth ###
+Incorrect or already confirmed token.: 'Неверный или уже подтвержденный токен.'
+###< Auth ###
+
+###> User ###
+Unable to edit yourself.: 'Невозможно редактировать себя.'
+Unable to change role for yourself.: 'Невозможно изменить роль для себя.'
+Unable to block yourself.: 'Невозможно заблокировать себя.'
+###< User ###
